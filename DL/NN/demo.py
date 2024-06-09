@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from keras.models import Model
-from keras.utils import np_utils
+from tensorflow.keras.models import Model
+import np_utils
 
 def get_local_mnist_data():
     # 读取本地的MNIST数据集文件
