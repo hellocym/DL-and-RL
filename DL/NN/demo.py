@@ -10,10 +10,10 @@ from keras.utils import np_utils
 
 def get_local_mnist_data():
     # 读取本地的MNIST数据集文件
-    train_images_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/train-images.idx3-ubyte'
-    train_labels_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/train-labels.idx1-ubyte'
-    test_images_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/t10k-images.idx3-ubyte'
-    test_labels_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/t10k-labels.idx1-ubyte'
+    train_images_file = '../Data/data/train-images.idx3-ubyte'
+    train_labels_file = '../Data/data/train-labels.idx1-ubyte'
+    test_images_file = '../Data/data/t10k-images.idx3-ubyte'
+    test_labels_file = '../Data/data/t10k-labels.idx1-ubyte'
 
     # 使用idx2numpy读取数据集文件
     x_train_original = idx2numpy.convert_from_file(train_images_file)
