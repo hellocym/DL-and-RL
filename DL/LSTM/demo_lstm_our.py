@@ -16,10 +16,10 @@ from tensorflow.keras.layers import Layer, Dense
 
 def get_local_mnist_data():
     # 读取本地的MNIST数据集文件
-    train_images_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/train-images.idx3-ubyte'
-    train_labels_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/train-labels.idx1-ubyte'
-    test_images_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/t10k-images.idx3-ubyte'
-    test_labels_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/t10k-labels.idx1-ubyte'
+    train_images_file = '../Data/data/train-images.idx3-ubyte'
+    train_labels_file = '../Data/data/train-labels.idx1-ubyte'
+    test_images_file = '../Data/data/t10k-images.idx3-ubyte'
+    test_labels_file = '../Data/data/t10k-labels.idx1-ubyte'
 
     # 使用idx2numpy读取数据集文件
     x_train_original = idx2numpy.convert_from_file(train_images_file)
@@ -79,15 +79,21 @@ class CustomLSTM(Layer):
         self.h = tf.zeros((batch_size, self.hidden_size))
         self.c = tf.zeros((batch_size, self.hidden_size))
 
-        for t in range(sequence_length):
+        def body(t, h, c):
             xt = inputs[:, t, :]
-            combined = tf.concat([xt, self.h], axis=1)
+            combined = tf.concat([xt, h], axis=1)
             f_t = tf.sigmoid(tf.matmul(combined, self.W_f) + self.b_f)
             i_t = tf.sigmoid(tf.matmul(combined, self.W_i) + self.b_i)
             c_tilde_t = tf.tanh(tf.matmul(combined, self.W_c) + self.b_c)
-            self.c = f_t * self.c + i_t * c_tilde_t
+            c = f_t * c + i_t * c_tilde_t
             o_t = tf.sigmoid(tf.matmul(combined, self.W_o) + self.b_o)
-            self.h = o_t * tf.tanh(self.c)
+            h = o_t * tf.tanh(c)
+            return t + 1, h, c
+
+        def condition(t, h, c):
+            return t < sequence_length
+
+        _, self.h, self.c = tf.while_loop(condition, body, [0, self.h, self.c])
 
         return self.h
 
@@ -108,7 +114,7 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 # 训练模型
-train_history = model.fit(x_train_lstm, y_train, epochs=20, batch_size=32, validation_data=(x_val_lstm, y_val))
+train_history = model.fit(x_train_lstm, y_train, epochs=5, batch_size=32, validation_data=(x_val_lstm, y_val))
 
 
 

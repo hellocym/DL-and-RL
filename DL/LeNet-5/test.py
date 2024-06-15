@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 
 # 加载 SavedModel
-model = tf.saved_model.load('C:/Users/Even/Desktop/Lu/guidebook/minst/50epochs_train')
+model = tf.saved_model.load('./50epochs_train')
 
 # 定义图像预处理函数
 def preprocess_image(image_path):
@@ -13,7 +13,7 @@ def preprocess_image(image_path):
     return img
 
 # 读取并预处理图像
-image_path = 'C:/Users/Even/Desktop/Lu/guidebook/minst/image.jpg'
+image_path = './test image/2.jpg'
 img = preprocess_image(image_path)
 
 # 将 NumPy 数组转换为 TensorFlow 张量

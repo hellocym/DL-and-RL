@@ -7,15 +7,15 @@ import pandas as pd
 import seaborn as sns
 from sklearn.metrics import confusion_matrix
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Input, Dropout
-from keras.models import Model
-from keras.utils import np_utils
+from tensorflow.keras.models import Model
+import np_utils
 
 def get_local_mnist_data():
     # 读取本地的MNIST数据集文件
-    train_images_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/train-images.idx3-ubyte'
-    train_labels_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/train-labels.idx1-ubyte'
-    test_images_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/t10k-images.idx3-ubyte'
-    test_labels_file = 'C:/Users/Even/Desktop/Lu/guidebook/minst/data/t10k-labels.idx1-ubyte'
+    train_images_file = '../Data/data/train-images.idx3-ubyte'
+    train_labels_file = '../Data/data/train-labels.idx1-ubyte'
+    test_images_file = '../Data/data/t10k-images.idx3-ubyte'
+    test_labels_file = '../Data/data/t10k-labels.idx1-ubyte'
 
     # 使用idx2numpy读取数据集文件
     x_train_original = idx2numpy.convert_from_file(train_images_file)
@@ -110,13 +110,14 @@ predictions = np.argmax(predictions, axis=1)
 print('前20张图片预测结果：', predictions[:20])
 
 # 预测结果图像可视化
-(x_train_original, y_train_original), (x_test_original, y_test_original) = get_local_mnist_data()
+x_train_original, y_train_original, _, _, x_test_original, y_test_original = get_local_mnist_data()
 def mnist_visualize_multiple_predict(start, end, length, width):
 
     for i in range(start, end):
         plt.subplot(length, width, 1 + i)
         plt.imshow(x_test_original[i], cmap=plt.get_cmap('gray'))
-        title_true = 'true=' + str(y_test_original[i])
+        idx = np.argmax(y_test_original[i])
+        title_true = 'true=' + str(idx)
         # title_prediction = ',' + 'prediction' + str(model.predict_classes(np.expand_dims(x_test[i], axis=0)))
         title_prediction = ',' + 'prediction' + str(predictions[i])
         title = title_true + title_prediction
@@ -128,6 +129,8 @@ def mnist_visualize_multiple_predict(start, end, length, width):
 mnist_visualize_multiple_predict(start=0, end=9, length=3, width=3)
 
 # 混淆矩阵
+y_test_original = [np.argmax(y) for y in y_test_original]
+
 cm = confusion_matrix(y_test_original, predictions)
 cm = pd.DataFrame(cm)
 class_names = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
